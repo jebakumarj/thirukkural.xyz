@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512">
+  <defs>
+    <linearGradient id="ground" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#9c2114"/>
+      <stop offset="1" stop-color="#6d1009"/>
+    </linearGradient>
+    <linearGradient id="board" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#e0a866"/>
+      <stop offset="1" stop-color="#c2833f"/>
+    </linearGradient>
+    <pattern id="weave" width="49.152" height="49.152" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+      <rect width="49.152" height="49.152" fill="none"/>
+      <path d="M0 0 V49.152" stroke="#ffffff" stroke-opacity="0.07" stroke-width="9.0112"/>
+      <path d="M0 0 H49.152" stroke="#000000" stroke-opacity="0.07" stroke-width="9.0112"/>
+    </pattern>
+  </defs>
+
+  <rect width="512" height="512" rx="112.64" fill="url(#ground)"/>
+  <rect width="512" height="512" rx="112.64" fill="url(#weave)"/>
+
+  <path d="M 88.88320000000002 161.792 H 423.1168 L 452.608 256 L 423.1168 350.208 H 88.88320000000002 L 59.39200000000001 256 Z" fill="#8a5524" transform="translate(0, 11.304960000000001)"/>
+  <path d="M 88.88320000000002 161.792 H 423.1168 L 452.608 256 L 423.1168 350.208 H 88.88320000000002 L 59.39200000000001 256 Z" fill="url(#board)"/>
+
+  <rect x="130.17088" y="209.83808000000002" width="251.65824" height="24.494080000000004" rx="12.247040000000002" fill="#5d2f10"/>
+  <rect x="130.17088" y="273.89952" width="156.0281088" height="24.494080000000004" rx="12.247040000000002" fill="#5d2f10"/>
+</svg>

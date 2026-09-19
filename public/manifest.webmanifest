@@ -1,0 +1,42 @@
+{
+  "name": "திருக்குறள்",
+  "short_name": "திருக்குறள்",
+  "description": "1330 குறள்களும் மூன்று உரைகளும் — தேடலுடன், இணையம் இல்லாமலும் இயங்கும்.",
+  "lang": "ta",
+  "dir": "ltr",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#f4f7fb",
+  "theme_color": "#f4f7fb",
+  "categories": ["books", "education", "lifestyle"],
+  "icons": [
+    { "src": "/icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "/icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "/icons/icon-192-maskable.png", "sizes": "192x192", "type": "image/png", "purpose": "maskable" },
+    { "src": "/icons/icon-512-maskable.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ],
+  "shortcuts": [
+    {
+      "name": "இன்றைய குறள்",
+      "url": "/",
+      "icons": [{ "src": "/icons/icon-192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "தேடல்",
+      "url": "/search",
+      "icons": [{ "src": "/icons/icon-192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "விருப்பக் குறள்கள்",
+      "url": "/favourites",
+      "icons": [{ "src": "/icons/icon-192.png", "sizes": "192x192" }]
+    }
+  ],
+  "share_target": {
+    "action": "/search",
+    "method": "GET",
+    "params": { "text": "q", "title": "q" }
+  }
+}

@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="ta">
+  <head>
+    <meta charset="utf-8" />
+    <title>திருக்குறள்</title>
+    <base href="/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="description" content="1330 திருக்குறள்களும் மூன்று உரைகளும் — தேடலுடன், இணையம் இல்லாமலும் இயங்கும்." />
+    <meta name="theme-color" content="#f4f7fb" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-title" content="திருக்குறள்" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+
+    <link rel="manifest" href="/manifest.webmanifest" />
+    <!-- The mark is plain shapes, so the SVG renders anywhere; the PNGs cover
+         browsers that ignore it. -->
+    <link rel="icon" type="image/svg+xml" href="/icons/icon.svg" />
+    <link rel="icon" type="image/png" sizes="16x16" href="/icons/favicon-16.png" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/icons/favicon-32.png" />
+    <link rel="icon" type="image/png" sizes="48x48" href="/icons/favicon-48.png" />
+    <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png" />
+
+    <meta property="og:image" content="https://thirukkural.xyz/icons/og-image.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="திருக்குறள் — 1330 குறள்கள், மூன்று உரைகள்" />
+    <meta name="twitter:image" content="https://thirukkural.xyz/icons/og-image.png" />
+
+    <link rel="preload" href="/fonts/mukta-malar-400-tamil.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="/fonts/mukta-malar-600-tamil.woff2" as="font" type="font/woff2" crossorigin />
+
+    <script>
+      // Applied before first paint so a dark-theme reader never sees a white flash.
+      (function () {
+        try {
+          var stored = localStorage.getItem('tk.theme');
+          if (stored === 'light' || stored === 'dark') {
+            document.documentElement.dataset.theme = stored;
+          }
+          var dark =
+            stored === 'dark' ||
+            (stored !== 'light' && matchMedia('(prefers-color-scheme: dark)').matches);
+          if (dark) {
+            document
+              .querySelector('meta[name="theme-color"]')
+              .setAttribute('content', '#0d1420');
+          }
+        } catch (e) {}
+      })();
+    </script>
+  </head>
+  <body>
+    <app-root></app-root>
+    <noscript>
+      இந்தச் செயலி முழுமையாக இயங்க JavaScript தேவை. ஒவ்வொரு குறளுக்கும் தனிப் பக்கம்
+      உள்ளது — எடுத்துக்காட்டாக /kural/1.
+    </noscript>
+  </body>
+</html>

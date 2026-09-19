@@ -1,0 +1,165 @@
+<a class="skip-link" href="#main">உள்ளடக்கத்திற்குச் செல்</a>
+
+<header class="app-header">
+  <div class="header-inner">
+    <button
+      type="button"
+      class="btn-icon menu-button"
+      aria-haspopup="dialog"
+      [attr.aria-expanded]="drawerOpen()"
+      aria-label="நூற் பட்டியல்"
+      title="நூற் பட்டியல்"
+      (click)="drawerOpen.set(true)"
+    >
+      <app-icon name="menu" />
+    </button>
+
+    <a routerLink="/" class="brand" aria-label="திருக்குறள் முகப்பு">
+      <span class="brand-mark" aria-hidden="true">
+        <svg viewBox="0 0 512 512" focusable="false">
+          <defs>
+          <linearGradient id="ground" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#9c2114"/>
+          <stop offset="1" stop-color="#6d1009"/>
+          </linearGradient>
+          <linearGradient id="board" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#e0a866"/>
+          <stop offset="1" stop-color="#c2833f"/>
+          </linearGradient>
+          <pattern id="weave" width="49.152" height="49.152" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+          <rect width="49.152" height="49.152" fill="none"/>
+          <path d="M0 0 V49.152" stroke="#ffffff" stroke-opacity="0.07" stroke-width="9.0112"/>
+          <path d="M0 0 H49.152" stroke="#000000" stroke-opacity="0.07" stroke-width="9.0112"/>
+          </pattern>
+          </defs>
+          <rect width="512" height="512" rx="112.64" fill="url(#ground)"/>
+          <rect width="512" height="512" rx="112.64" fill="url(#weave)"/>
+          <path d="M 88.88320000000002 161.792 H 423.1168 L 452.608 256 L 423.1168 350.208 H 88.88320000000002 L 59.39200000000001 256 Z" fill="#8a5524" transform="translate(0, 11.304960000000001)"/>
+          <path d="M 88.88320000000002 161.792 H 423.1168 L 452.608 256 L 423.1168 350.208 H 88.88320000000002 L 59.39200000000001 256 Z" fill="url(#board)"/>
+          <rect x="130.17088" y="209.83808000000002" width="251.65824" height="24.494080000000004" rx="12.247040000000002" fill="#5d2f10"/>
+          <rect x="130.17088" y="273.89952" width="156.0281088" height="24.494080000000004" rx="12.247040000000002" fill="#5d2f10"/>
+        </svg>
+      </span>
+      <span class="brand-name">திருக்குறள்</span>
+    </a>
+
+    <nav class="desktop-nav" aria-label="முதன்மை வழிசெலுத்தல்">
+      <a routerLink="/kural" routerLinkActive="is-active" [routerLinkActiveOptions]="{ exact: true }"
+        >குறள்</a
+      >
+      <a routerLink="/adhikaram" routerLinkActive="is-active">அதிகாரம்</a>
+      <a routerLink="/iyal" routerLinkActive="is-active">இயல்</a>
+      <a routerLink="/paal" routerLinkActive="is-active">பால்</a>
+    </nav>
+
+    <div class="header-actions">
+      @if (canInstall()) {
+        <button type="button" class="btn install-btn" (click)="install()">நிறுவு</button>
+      }
+      <a
+        routerLink="/search"
+        routerLinkActive="is-active"
+        class="btn-icon"
+        aria-label="தேடு"
+        title="தேடு"
+      >
+        <app-icon name="search" />
+      </a>
+      <!-- Phones reach favourites from the tab bar, so this one is for wide screens. -->
+      <a
+        routerLink="/favourites"
+        routerLinkActive="is-active"
+        class="btn-icon desktop-only"
+        aria-label="விருப்பக் குறள்கள்"
+        title="விருப்பக் குறள்கள்"
+      >
+        <app-icon name="heart" />
+      </a>
+      <button
+        type="button"
+        class="btn-icon"
+        (click)="cycleTheme()"
+        [attr.aria-label]="'தோற்றம்: ' + themeLabel()[preferences.theme()]"
+        [title]="'தோற்றம்: ' + themeLabel()[preferences.theme()]"
+      >
+        @switch (preferences.theme()) {
+          @case ('light') {
+            <app-icon name="sun" />
+          }
+          @case ('dark') {
+            <app-icon name="moon" />
+          }
+          @default {
+            <app-icon name="auto" />
+          }
+        }
+      </button>
+    </div>
+  </div>
+</header>
+
+<div class="shell">
+  <!-- Deferred so the book tree, which reads the whole corpus, never lands in
+       the initial bundle. -->
+  @defer (on idle) {
+    <aside class="sidebar" aria-label="நூல்">
+      <app-book-nav />
+    </aside>
+  } @placeholder {
+    <aside class="sidebar" aria-hidden="true"></aside>
+  }
+
+  <main id="main" tabindex="-1">
+    <router-outlet />
+  </main>
+</div>
+
+<nav class="tabbar" aria-label="வழிசெலுத்தல்">
+  <a routerLink="/" routerLinkActive="is-active" [routerLinkActiveOptions]="{ exact: true }">
+    <app-icon name="home" />
+    <span>முகப்பு</span>
+  </a>
+  <a routerLink="/adhikaram" routerLinkActive="is-active">
+    <app-icon name="book" />
+    <span>அதிகாரம்</span>
+  </a>
+  <a routerLink="/kural" routerLinkActive="is-active" [routerLinkActiveOptions]="{ exact: true }">
+    <app-icon name="list" />
+    <span>குறள்</span>
+  </a>
+  <a routerLink="/favourites" routerLinkActive="is-active">
+    <app-icon name="heart" />
+    <span>விருப்பம்</span>
+    @if (favourites.count(); as count) {
+      <span class="badge" aria-hidden="true">{{ count }}</span>
+    }
+  </a>
+</nav>
+
+<!-- The same tree as a drawer, for screens too narrow for the sidebar. -->
+<dialog #drawer class="drawer" (close)="drawerOpen.set(false)" (click)="onDrawerClick($event)">
+  <div class="drawer-panel">
+    <header>
+      <h2>நூல்</h2>
+      <button type="button" class="btn-icon" aria-label="மூடு" (click)="drawerOpen.set(false)">
+        <app-icon name="close" />
+      </button>
+    </header>
+    @defer (on interaction; on idle) {
+      <app-book-nav (navigate)="drawerOpen.set(false)" />
+    } @placeholder {
+      <p class="muted">…</p>
+    }
+  </div>
+</dialog>
+
+@if (share.toast(); as message) {
+  <p class="toast" role="status">{{ message }}</p>
+}
+
+@if (updateReady()) {
+  <div class="toast toast-action" role="status">
+    <span>புதிய பதிப்பு தயார்</span>
+    <button type="button" (click)="reload()">புதுப்பி</button>
+  </div>
+}

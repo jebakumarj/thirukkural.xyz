@@ -1,0 +1,319 @@
+:host {
+  display: block;
+  min-height: 100dvh;
+  /* Room for the fixed tab bar plus the iOS home indicator. */
+  padding-bottom: calc(var(--tabbar-height) + env(safe-area-inset-bottom));
+}
+
+/* --- header ---------------------------------------------------- */
+
+.app-header {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  background: color-mix(in srgb, var(--bg) 88%, transparent);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border);
+}
+
+.header-inner {
+  max-width: 72rem;
+  margin-inline: auto;
+  min-height: var(--header-height);
+  padding-inline: var(--gutter);
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding-block: var(--space-1);
+  color: var(--text);
+  font-weight: 700;
+  font-size: var(--step-1);
+  margin-inline-end: auto;
+}
+
+.brand:hover {
+  text-decoration: none;
+}
+
+.brand-mark {
+  display: grid;
+  place-items: center;
+  width: 1.9rem;
+  height: 1.9rem;
+  border-radius: 0.55rem;
+  overflow: hidden;
+}
+
+/* The mark is drawn on a 512 canvas whose tile the span itself provides. */
+.brand-mark svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.desktop-nav {
+  display: none;
+  gap: var(--space-1);
+}
+
+.desktop-nav a {
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-pill);
+  color: var(--text-muted);
+  font-size: var(--step--1);
+  font-weight: 600;
+}
+
+.desktop-nav a:hover {
+  background: var(--surface-muted);
+  color: var(--text);
+  text-decoration: none;
+}
+
+.desktop-nav a.is-active {
+  background: var(--accent-soft);
+  color: var(--accent-text);
+}
+
+.desktop-only {
+  display: none;
+}
+
+.header-actions a.is-active {
+  color: var(--accent-text);
+  background: var(--accent-soft);
+}
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+}
+
+.install-btn {
+  min-height: 2.25rem;
+  padding-inline: var(--space-3);
+}
+
+/* --- tab bar (phones) ------------------------------------------ */
+
+.tabbar {
+  position: fixed;
+  inset-inline: 0;
+  bottom: 0;
+  z-index: 20;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  background: color-mix(in srgb, var(--bg-elevated) 92%, transparent);
+  backdrop-filter: blur(12px);
+  border-top: 1px solid var(--border);
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+.tabbar a {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  min-height: var(--tabbar-height);
+  color: var(--text-muted);
+  font-size: 0.7rem;
+  font-weight: 600;
+  --icon-size: 1.35rem;
+}
+
+.tabbar a:hover {
+  text-decoration: none;
+}
+
+.tabbar a.is-active {
+  color: var(--accent-text);
+}
+
+.tabbar .badge {
+  position: absolute;
+  top: 0.55rem;
+  inset-inline-start: 55%;
+  min-width: 1.05rem;
+  height: 1.05rem;
+  padding-inline: 0.2rem;
+  border-radius: var(--radius-pill);
+  background: var(--accent);
+  color: #fff;
+  font-size: 0.65rem;
+  line-height: 1.05rem;
+  text-align: center;
+}
+
+:root[data-theme='dark'] .tabbar .badge {
+  color: #0a1220;
+}
+
+/* --- toasts ---------------------------------------------------- */
+
+.toast {
+  position: fixed;
+  inset-inline: var(--gutter);
+  bottom: calc(var(--tabbar-height) + env(safe-area-inset-bottom) + var(--space-3));
+  z-index: 30;
+  margin: 0 auto;
+  max-width: 24rem;
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--radius-pill);
+  background: var(--text);
+  color: var(--bg);
+  font-size: var(--step--1);
+  text-align: center;
+  box-shadow: var(--shadow-lifted);
+  animation: toast-in 0.2s ease;
+}
+
+.toast-action {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+}
+
+.toast-action button {
+  font-weight: 700;
+  color: var(--bg);
+  text-decoration: underline;
+}
+
+@keyframes toast-in {
+  from {
+    opacity: 0;
+    transform: translateY(0.5rem);
+  }
+}
+
+/* --- wide screens ---------------------------------------------- */
+
+@media (min-width: 48rem) {
+  :host {
+    padding-bottom: 0;
+  }
+
+  .desktop-nav {
+    display: flex;
+  }
+
+  .tabbar,
+  .mobile-only {
+    display: none;
+  }
+
+  .desktop-only {
+    display: inline-grid;
+  }
+
+  .toast {
+    bottom: var(--space-5);
+  }
+}
+
+/* --- shell: sidebar beside the content on wide screens --------- */
+
+.shell {
+  display: block;
+}
+
+.sidebar {
+  display: none;
+}
+
+.menu-button {
+  margin-inline-start: calc(-1 * var(--space-2));
+}
+
+/* --- book drawer (narrow screens) ------------------------------ */
+
+.drawer {
+  width: min(20rem, 85vw);
+  max-width: none;
+  height: 100dvh;
+  max-height: 100dvh;
+  margin: 0 auto 0 0;
+  padding: 0;
+  border: none;
+  border-inline-end: 1px solid var(--border);
+  background: var(--bg-elevated);
+  color: var(--text);
+}
+
+.drawer::backdrop {
+  background: rgb(8 16 30 / 0.45);
+}
+
+.drawer[open] {
+  animation: drawer-in 0.18s ease;
+}
+
+@keyframes drawer-in {
+  from {
+    transform: translateX(-1rem);
+    opacity: 0;
+  }
+}
+
+.drawer-panel {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  height: 100%;
+  overflow-y: auto;
+  padding: var(--space-4) var(--space-3) calc(var(--space-6) + env(safe-area-inset-bottom));
+}
+
+.drawer-panel header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  padding-inline-start: var(--space-2);
+}
+
+.drawer-panel h2 {
+  font-size: var(--step-1);
+}
+
+@media (min-width: 64rem) {
+  /* The tree is always visible, so the hamburger is not needed. */
+  .menu-button {
+    display: none;
+  }
+
+  .shell {
+    display: grid;
+    grid-template-columns: 17rem minmax(0, 1fr);
+    gap: var(--space-5);
+    max-width: 72rem;
+    margin-inline: auto;
+    padding-inline: var(--gutter);
+  }
+
+  .sidebar {
+    display: block;
+    position: sticky;
+    top: var(--header-height);
+    align-self: start;
+    max-height: calc(100dvh - var(--header-height));
+    overflow-y: auto;
+    padding: var(--space-5) var(--space-1) var(--space-6) 0;
+    scrollbar-width: thin;
+  }
+
+  .shell main {
+    min-width: 0;
+  }
+
+}
