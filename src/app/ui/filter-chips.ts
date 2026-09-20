@@ -11,6 +11,9 @@ import { adhikaram, iyal, paal } from '../core/corpus';
   selector: 'app-filter-chips',
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [Icon],
+  // With no chips the host must leave the flow entirely: as a zero-height
+  // flex item it would still take a gap on either side of itself.
+  host: { '[class.has-chips]': 'chips().length' },
   template: `
     @if (chips().length) {
       <div class="chips">
@@ -35,6 +38,14 @@ import { adhikaram, iyal, paal } from '../core/corpus';
     }
   `,
   styles: `
+    :host {
+      display: none;
+    }
+
+    :host(.has-chips) {
+      display: block;
+    }
+
     .chips {
       display: flex;
       flex-wrap: wrap;

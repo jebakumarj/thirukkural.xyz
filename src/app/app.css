@@ -266,12 +266,13 @@
 }
 
 .drawer-panel {
+  --nav-surface: var(--bg-elevated);
   display: flex;
   flex-direction: column;
   gap: var(--space-3);
   height: 100%;
   overflow-y: auto;
-  padding: var(--space-4) var(--space-3) calc(var(--space-6) + env(safe-area-inset-bottom));
+  padding: var(--space-4) var(--space-3) 0;
 }
 
 .drawer-panel header {
@@ -301,14 +302,24 @@
     padding-inline: var(--gutter);
   }
 
+  /* A full-height column: the tree scrolls inside it, the help link stays
+     at its foot. */
   .sidebar {
-    display: block;
+    display: flex;
+    flex-direction: column;
     position: sticky;
     top: var(--header-height);
     align-self: start;
-    max-height: calc(100dvh - var(--header-height));
+    height: calc(100dvh - var(--header-height));
+    overflow: hidden;
+    padding: var(--space-4) var(--space-3) 0 0;
+    border-inline-end: 1px solid var(--border);
+  }
+
+  .sidebar app-book-nav {
+    flex: 1;
+    min-height: 0;
     overflow-y: auto;
-    padding: var(--space-5) var(--space-1) var(--space-6) 0;
     scrollbar-width: thin;
   }
 
@@ -316,4 +327,45 @@
     min-width: 0;
   }
 
+}
+
+/* --- about and help, pinned to the foot of the tree ------------- */
+
+.nav-footer {
+  position: sticky;
+  bottom: 0;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin-top: auto;
+  padding-block: var(--space-2) calc(var(--space-2) + env(safe-area-inset-bottom));
+  border-top: 1px solid var(--border);
+  /* Opaque and matching its surroundings, so the tree scrolls underneath
+     without the footer reading as a separate card. */
+  background: var(--nav-surface, var(--bg));
+}
+
+/* Same row shape as the tree above it. */
+.nav-footer-link {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-height: 2.25rem;
+  padding: var(--space-1) var(--space-2);
+  border-radius: var(--radius-sm);
+  color: var(--text-muted);
+  font-size: var(--step--1);
+  font-weight: 600;
+  --icon-size: 1rem;
+}
+
+.nav-footer-link:hover {
+  background: var(--surface-muted);
+  color: var(--accent-text);
+  text-decoration: none;
+}
+
+.nav-footer-link.is-active {
+  color: var(--accent-text);
 }

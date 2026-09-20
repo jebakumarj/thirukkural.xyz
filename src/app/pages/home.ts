@@ -6,7 +6,7 @@ import {
   inject,
   signal,
 } from '@angular/core';
-import { Router, RouterLink } from '@angular/router';
+import { Router } from '@angular/router';
 import { KuralCard } from '../ui/kural-card';
 import { Icon } from '../ui/icon';
 import { KURAL_COUNT, kuralOfTheDay } from '../core/corpus';
@@ -15,7 +15,7 @@ import { SITE_NAME, Seo } from '../core/seo';
 @Component({
   selector: 'app-home',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [RouterLink, KuralCard, Icon],
+  imports: [KuralCard, Icon],
   template: `
     <div class="page">
       <header class="head">
@@ -29,10 +29,6 @@ import { SITE_NAME, Seo } from '../core/seo';
             <app-icon name="shuffle" />
             <span>ஏதேனும் ஒரு குறள்</span>
           </button>
-          <a routerLink="/about" class="btn">
-            <app-icon name="info" />
-            <span>நூலைப் பற்றி</span>
-          </a>
         </div>
       </header>
 

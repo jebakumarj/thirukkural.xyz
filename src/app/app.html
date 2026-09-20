@@ -53,8 +53,8 @@
     </nav>
 
     <div class="header-actions">
-      @if (canInstall()) {
-        <button type="button" class="btn install-btn" (click)="install()">நிறுவு</button>
+      @if (install.canPrompt()) {
+        <button type="button" class="btn install-btn" (click)="install.prompt()">நிறுவு</button>
       }
       <a
         routerLink="/search"
@@ -104,6 +104,17 @@
   @defer (on idle) {
     <aside class="sidebar" aria-label="நூல்">
       <app-book-nav />
+      <!-- Stays put at the foot of the column while the tree scrolls. -->
+      <div class="nav-footer">
+        <a routerLink="/about" routerLinkActive="is-active" class="nav-footer-link">
+          <app-icon name="info" />
+          <span>நூலைப் பற்றி</span>
+        </a>
+        <a routerLink="/help" routerLinkActive="is-active" class="nav-footer-link">
+          <app-icon name="help" />
+          <span>உதவியும் தொடர்பும்</span>
+        </a>
+      </div>
     </aside>
   } @placeholder {
     <aside class="sidebar" aria-hidden="true"></aside>
@@ -150,8 +161,31 @@
     } @placeholder {
       <p class="muted">…</p>
     }
+
+    <div class="nav-footer">
+      <a
+        routerLink="/about"
+        routerLinkActive="is-active"
+        class="nav-footer-link"
+        (click)="drawerOpen.set(false)"
+      >
+        <app-icon name="info" />
+        <span>நூலைப் பற்றி</span>
+      </a>
+      <a
+        routerLink="/help"
+        routerLinkActive="is-active"
+        class="nav-footer-link"
+        (click)="drawerOpen.set(false)"
+      >
+        <app-icon name="help" />
+        <span>உதவியும் தொடர்பும்</span>
+      </a>
+    </div>
   </div>
 </dialog>
+
+<app-install-prompt />
 
 @if (share.toast(); as message) {
   <p class="toast" role="status">{{ message }}</p>

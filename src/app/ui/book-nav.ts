@@ -69,30 +69,34 @@ import { PAALS, adhikaram, adhikaramsOfIyal, iyalsOfPaal } from '../core/corpus'
     .tree {
       display: flex;
       flex-direction: column;
-      gap: var(--space-1);
+      gap: 2px;
       font-size: var(--step--1);
     }
 
     .group {
       display: flex;
       flex-direction: column;
+      gap: 2px;
     }
 
+    /* One row shape for all three levels: depth reads from the indent, the
+       weight and the colour rather than from a different shape each time. */
     .row {
       display: flex;
       align-items: center;
       gap: var(--space-2);
       width: 100%;
-      min-height: 2.5rem;
+      min-height: 2.25rem;
       padding: var(--space-1) var(--space-2);
       border-radius: var(--radius-sm);
-      color: var(--text);
+      color: var(--text-muted);
       text-align: start;
-      --icon-size: 1rem;
+      --icon-size: 0.9rem;
     }
 
     .row:hover {
       background: var(--surface-muted);
+      color: var(--text);
       text-decoration: none;
     }
 
@@ -101,36 +105,39 @@ import { PAALS, adhikaram, adhikaramsOfIyal, iyalsOfPaal } from '../core/corpus'
       min-width: 0;
       overflow: hidden;
       text-overflow: ellipsis;
+      white-space: nowrap;
     }
 
     .paal {
+      color: var(--text);
       font-weight: 700;
     }
 
     .iyal {
       padding-inline-start: var(--space-4);
-      color: var(--text-muted);
       font-weight: 600;
     }
 
     .adhikaram {
-      padding-inline-start: calc(var(--space-6) + var(--space-1));
-      color: var(--text-muted);
-      min-height: 2.25rem;
+      padding-inline-start: calc(var(--space-6) + var(--space-2));
     }
 
     .adhikaram .index {
       flex: none;
-      min-width: 1.75rem;
+      min-width: 1.6rem;
       font-variant-numeric: tabular-nums;
-      font-size: 0.75rem;
-      opacity: 0.8;
+      font-size: 0.72rem;
+      opacity: 0.75;
     }
 
     .adhikaram.is-active {
       background: var(--accent-soft);
       color: var(--accent-text);
       font-weight: 600;
+    }
+
+    .adhikaram.is-active .index {
+      opacity: 1;
     }
   `,
 })

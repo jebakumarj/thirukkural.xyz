@@ -15,14 +15,33 @@ nginx serves them.
 | Data | `src/data/*.json`, imported at build time into a lazy chunk (~224 KB over the wire) |
 | Rendering | Static prerendering of every route (`outputMode: static`) — no Node in production |
 | Styling | Plain CSS with custom properties, mobile-first, light and dark themes, blue palette carried over from the original app. No CSS framework |
-| Icons | Inline SVG components. No icon font. The app mark is a palm-leaf manuscript, drawn as shapes so it needs no font |
+| Icons | Inline SVG components. No icon font. The app mark is an ஓலைச்சுவடி plaque, drawn as shapes so it needs no font |
 | Fonts | Mukta Malar, self-hosted, Tamil and Latin subsets only |
 | Search | Client-side over the whole corpus; nothing leaves the device |
+| Sharing | The card is drawn on a canvas and shared as a PNG with the link; no screenshot library |
 | Offline | Angular service worker precaches the shell, the corpus, the fonts and the icons |
 | Storage | Favourites and preferences in `localStorage`, guarded so the app works without it |
 
-Initial load is about 85 KB compressed; the corpus arrives in a second, cached
+Initial load is about 91 KB compressed; the corpus arrives in a second, cached
 chunk.
+
+## What it does
+
+- **Kural of the day** on the home page, from the reader's own date.
+- **Browsing** down the book: பால் → இயல் → அதிகாரம் → குறள். Each step carries
+  its filter to the next as a removable chip, with the result count beside it.
+- **A book tree** in a left sidebar on wide screens, and behind the hamburger on
+  narrow ones. Choosing a chapter opens its kurals with the row marked current.
+- **Search** across couplets, commentaries and chapter names, with the same
+  பால்/இயல்/அதிகாரம் filter behind a filter button. Typing a number jumps to that
+  kural. Shareable as `/search?q=…&adhikaram=…`.
+- **Cards** show the couplet with மு.வ. உரை; a chevron opens the other two.
+- **Share** hands the platform a rendered picture of the card, the link and a
+  line about the app, stepping down to text, then the clipboard, as the browser
+  allows. **Copy** takes the couplet and whichever commentaries are open.
+- **Favourites** in this browser, with a count on the tab bar.
+- **Installable** as a PWA, with shortcuts and a share target, and fully usable
+  offline after the first visit.
 
 ## Working on it
 
@@ -48,7 +67,9 @@ npm run icons        # re-render the icon set, favicon and link-preview image
 ```
 
 Both write files that are committed, so an ordinary build never touches the
-network.
+network. Regenerating the link-preview image needs a Tamil font on the machine
+(Nirmala UI on Windows, Noto Sans Tamil elsewhere); the icons themselves are
+plain shapes and need none.
 
 ### The corpus
 
@@ -73,7 +94,9 @@ npm run deploy
 
 Each deploy uploads a timestamped release and flips the `current` symlink, so
 rolling back is re-pointing that symlink at the previous release. Pushing to
-`main` does the same thing through `.github/workflows/deploy.yml`.
+`main` does the same thing through `.github/workflows/deploy.yml`, which needs
+three repository secrets: `DEPLOY_HOST`, `DEPLOY_KEY` (the private key) and
+`DEPLOY_HOST_KEY` (the server's `known_hosts` line).
 
 Two cache rules in [deploy/nginx.conf](deploy/nginx.conf) matter more than the
 rest: `index.html` and `ngsw.json` must not be cached, or visitors stay on an
@@ -84,11 +107,29 @@ old service worker; everything with a hashed filename is cached for a year.
 | Path | Pages | What it is |
 | --- | --- | --- |
 | `/` | 1 | Kural of the day, computed from the reader's date |
+| `/kural` | 1 | The kurals of one adhikaram, chosen from the tree or the filter dialog |
 | `/kural/:id` | 1330 | One couplet with all three commentaries |
 | `/adhikaram`, `/adhikaram/:id` | 134 | The 133 chapters |
 | `/iyal`, `/iyal/:id` | 14 | The 13 chapter groups |
 | `/paal`, `/paal/:id` | 4 | அறம், பொருள், இன்பம் |
-| `/kural` | 1 | All kurals of a chosen adhikaram, with பால்/இயல்/அதிகாரம் dropdowns |
-| `/search` | 1 | Client-side search with the same filter behind a filter button; shareable as `/search?q=…&adhikaram=…` |
+| `/search` | 1 | Client-side search with filter and number jump |
 | `/favourites` | 1 | Saved kurals, this browser only |
-| `/about` | 1 | The book, plus commentary and theme preferences |
+| `/about` | 1 | The book, its figures, and reading preferences |
+
+The list pages link into the filtered views (`/kural?adhikaram=7`), while
+`/adhikaram/:id` and the other detail pages stay as the prerendered, canonical
+URLs that crawlers follow.
+
+## Contact
+
+Suggestions, typos, corrections and rights queries: <admin@thirukkural.xyz>,
+or open an issue. The address is also on the app's நூலைப் பற்றி page.
+
+## Licence
+
+The code is MIT licensed — see [LICENSE](LICENSE).
+
+The texts are a separate matter: the Kural is in the public domain, but the
+three commentaries are modern works that are **not** covered by that licence.
+[CONTENT.md](CONTENT.md) sets out where the data came from and what that means
+if you reuse this repository.

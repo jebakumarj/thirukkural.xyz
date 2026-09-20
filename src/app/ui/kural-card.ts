@@ -86,13 +86,11 @@ import { Share } from '../core/share';
     </article>
   `,
   styles: `
-    /* The blue edge is carried over from the original app's kural card. */
     .kural-card {
       display: flex;
       flex-direction: column;
       gap: var(--space-3);
       padding: var(--space-4);
-      border-inline-start: 4px solid var(--accent);
     }
 
     /* Kural number and adhikaram on one side, paal and iyal on the other,

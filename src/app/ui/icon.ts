@@ -22,7 +22,9 @@ export type IconName =
   | 'list'
   | 'menu'
   | 'filter'
-  | 'info';
+  | 'info'
+  | 'help'
+  | 'mail';
 
 /**
  * Icons are inline SVG rather than an icon font: nothing to download, nothing
@@ -138,6 +140,15 @@ export type IconName =
         }
         @case ('filter') {
           <path d="M4 6h16l-6.2 7.2V19l-3.6-2v-3.8z" />
+        }
+        @case ('mail') {
+          <rect x="3" y="5.5" width="18" height="13" rx="2" />
+          <path d="m3.5 7 8.5 6 8.5-6" />
+        }
+        @case ('help') {
+          <circle cx="12" cy="12" r="8.5" />
+          <path d="M9.6 9.3a2.5 2.5 0 1 1 3.4 2.3c-.7.3-1 .9-1 1.6v.4" />
+          <path d="M12 16.7h.01" />
         }
         @case ('info') {
           <circle cx="12" cy="12" r="8.5" />

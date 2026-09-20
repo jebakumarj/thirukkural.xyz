@@ -13,9 +13,24 @@ sudo chown -R deploy:deploy /var/www/thirukkural
 Add your workstation's public key to `/home/deploy/.ssh/authorized_keys`. The
 deploy user needs no sudo: it only writes inside `/var/www/thirukkural`.
 
+Restrict what that key can do, so a leaked deploy key cannot open a shell —
+prefix the line in `authorized_keys` with:
+
+```
+restrict,pty ssh-ed25519 AAAA...
+```
+
+`restrict` turns off agent and port forwarding, X11 and user rc; `pty` is kept
+because `deploy.sh` runs a short `bash -s` block over ssh to swap the symlink.
+
+While you are there, confirm the basics in `/etc/ssh/sshd_config`:
+`PasswordAuthentication no`, `PermitRootLogin no`. If the box is reachable from
+the internet, `fail2ban` is worth the five minutes.
+
 ## 2. nginx
 
 ```bash
+sudo cp deploy/security-headers.conf /etc/nginx/snippets/thirukkural-security-headers.conf
 sudo cp deploy/nginx.conf /etc/nginx/sites-available/thirukkural.xyz
 sudo ln -s /etc/nginx/sites-available/thirukkural.xyz /etc/nginx/sites-enabled/
 sudo nginx -t && sudo systemctl reload nginx
@@ -56,9 +71,16 @@ sudo systemctl stop tomcat
 sudo systemctl disable tomcat
 ```
 
-Take a final `mysqldump` of the `Thirukkural` database and keep it with the
-repository before removing the MySQL user, so the corpus can be regenerated
-from source if it ever needs to be.
+Take a final `mysqldump` of the database and keep it somewhere private before
+removing the MySQL user, so the corpus can be regenerated if it ever needs to
+be. Keep the dump out of this repository.
+
+Until Tomcat is off, make sure it and MySQL are not reachable from outside the
+box — they only ever needed to talk to nginx on localhost:
+
+```bash
+sudo ss -ltnp | grep -E '8080|3306'   # expect 127.0.0.1, not 0.0.0.0
+```
 
 Remove the old `location /api { proxy_pass ... }` block from the nginx config
 at the same time — the new config here does not include one.

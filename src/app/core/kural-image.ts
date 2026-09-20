@@ -11,12 +11,10 @@ import { URAI_LABELS } from './preferences';
 
 const WIDTH = 1080;
 const PAD = 72;
-const EDGE = 14;
 
 const INK = '#16202e';
 const MUTED = '#5b6779';
 const ACCENT = '#0b5ed7';
-const ACCENT_DEEP = '#0848a8';
 const PAPER = '#ffffff';
 const BACKDROP = '#eef3fb';
 const RULE = '#dde5f0';
@@ -162,7 +160,7 @@ export const renderKuralImage = async (
   if (!measure) return null;
 
   const blocks = buildBlocks(context, urai);
-  const textWidth = WIDTH - PAD * 2 - EDGE;
+  const textWidth = WIDTH - PAD * 2;
 
   // First pass: lay the text out to find the height the card needs.
   const laid = blocks.map((block) => {
@@ -196,13 +194,7 @@ export const renderKuralImage = async (
   ctx.roundRect(cardLeft, cardTop, cardWidth, height - cardTop * 2, 28);
   ctx.fill();
 
-  // The blue edge the app's cards carry.
-  ctx.fillStyle = ACCENT;
-  ctx.beginPath();
-  ctx.roundRect(cardLeft, cardTop, EDGE, height - cardTop * 2, [28, 0, 0, 28]);
-  ctx.fill();
-
-  const left = cardLeft + EDGE + PAD * 0.7;
+  const left = cardLeft + PAD * 0.7;
   const right = cardLeft + cardWidth - PAD * 0.7;
   let y = cardTop + PAD * 0.7;
 

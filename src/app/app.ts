@@ -14,19 +14,16 @@ import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import { SwUpdate } from '@angular/service-worker';
 import { Icon } from './ui/icon';
 import { BookNav } from './ui/book-nav';
+import { InstallPrompt } from './ui/install-prompt';
+import { Install } from './core/install';
 import { Favourites } from './core/favourites';
 import { Preferences, ThemeChoice } from './core/preferences';
 import { Share } from './core/share';
 
-/** The `beforeinstallprompt` event, which TypeScript's DOM lib does not model. */
-interface InstallPromptEvent extends Event {
-  prompt(): Promise<void>;
-}
-
 @Component({
   selector: 'app-root',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [RouterOutlet, RouterLink, RouterLinkActive, Icon, BookNav],
+  imports: [RouterOutlet, RouterLink, RouterLinkActive, Icon, BookNav, InstallPrompt],
   templateUrl: './app.html',
   styleUrl: './app.css',
 })
@@ -36,10 +33,7 @@ export class App {
   protected readonly preferences = inject(Preferences);
   protected readonly favourites = inject(Favourites);
   protected readonly share = inject(Share);
-
-  /** Set once the browser offers to install the app to the home screen. */
-  private readonly installEvent = signal<InstallPromptEvent | null>(null);
-  protected readonly canInstall = computed(() => this.installEvent() !== null);
+  protected readonly install = inject(Install);
 
   /** The book tree, shown as a drawer on screens too narrow for the sidebar. */
   protected readonly drawerOpen = signal(false);
@@ -67,12 +61,6 @@ export class App {
 
     if (!isPlatformBrowser(this.platformId)) return;
 
-    addEventListener('beforeinstallprompt', (event) => {
-      event.preventDefault();
-      this.installEvent.set(event as InstallPromptEvent);
-    });
-    addEventListener('appinstalled', () => this.installEvent.set(null));
-
     if (this.swUpdate.isEnabled) {
       this.swUpdate.versionUpdates.subscribe((event) => {
         if (event.type === 'VERSION_READY') this.updateReady.set(true);
@@ -85,13 +73,6 @@ export class App {
     const order: readonly ThemeChoice[] = ['auto', 'light', 'dark'];
     const next = order[(order.indexOf(this.preferences.theme()) + 1) % order.length];
     this.preferences.setTheme(next);
-  }
-
-  protected async install(): Promise<void> {
-    const event = this.installEvent();
-    if (!event) return;
-    this.installEvent.set(null);
-    await event.prompt();
   }
 
   protected reload(): void {

@@ -4,14 +4,15 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
-    "build": "ng build && node scripts/generate-sitemap.mjs",
+    "build": "node scripts/generate-version.mjs && ng build && node scripts/generate-sitemap.mjs",
     "build:dev": "ng build --configuration development",
     "preview": "npm run build && npx --yes http-server dist/thirukkural/browser -p 4300 -c-1",
     "test": "ng test",
     "fonts": "node scripts/fetch-fonts.mjs",
     "icons": "node scripts/generate-icons.mjs",
     "deploy": "bash deploy/deploy.sh",
-    "check:layout": "node scripts/check-layout.mjs"
+    "check:layout": "node scripts/check-layout.mjs",
+    "version": "node scripts/generate-version.mjs"
   },
   "private": true,
   "packageManager": "npm@11.13.0",
@@ -25,7 +26,6 @@
     "@angular/router": "^22.1.0",
     "@angular/service-worker": "^22.1.7",
     "@angular/ssr": "^22.1.8",
-    "express": "^5.1.0",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0"
   },
@@ -33,7 +33,6 @@
     "@angular/build": "^22.1.8",
     "@angular/cli": "^22.1.8",
     "@angular/compiler-cli": "^22.1.0",
-    "@types/express": "^5.0.1",
     "@types/node": "^20.17.19",
     "jsdom": "^28.0.0",
     "prettier": "^3.8.1",

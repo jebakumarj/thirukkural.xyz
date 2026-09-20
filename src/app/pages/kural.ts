@@ -90,7 +90,6 @@ import { Seo } from '../core/seo';
       flex-direction: column;
       gap: var(--space-3);
       padding: var(--space-4);
-      border-inline-start: 4px solid var(--accent);
     }
 
     /* Same header as the list card: kural number and adhikaram on one side,

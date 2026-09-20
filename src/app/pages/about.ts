@@ -2,6 +2,7 @@ import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { Icon } from '../ui/icon';
 import { KURAL_COUNT } from '../core/corpus';
+import { APP_BUILT_ON, APP_COMMIT, APP_VERSION } from '../core/version';
 import { Preferences } from '../core/preferences';
 import { Seo } from '../core/seo';
 
@@ -11,8 +12,12 @@ import { Seo } from '../core/seo';
   imports: [RouterLink, Icon],
   template: `
     <div class="page">
-      <header class="page-head">
+      <header class="head">
         <h1 class="page-title">நூலைப் பற்றி</h1>
+        <a class="btn home" routerLink="/">
+          <app-icon name="home" />
+          முகப்பு
+        </a>
       </header>
 
       <section class="card prose">
@@ -67,13 +72,29 @@ import { Seo } from '../core/seo';
         </p>
       </section>
 
-      <a class="btn" routerLink="/">
-        <app-icon name="home" />
-        முகப்பு
-      </a>
+      <!-- Which build is running, for anyone reporting a problem. -->
+      <p class="version muted">
+        பதிப்பு {{ version }} · {{ builtOn }} ·
+        <span class="commit">{{ commit }}</span>
+      </p>
     </div>
   `,
   styles: `
+    /* Title on the left, the way back on the right. */
+    .head {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--space-3);
+    }
+
+    .home {
+      min-height: 2.25rem;
+      padding-inline: var(--space-3);
+      --icon-size: 1rem;
+    }
+
     /* Two columns on a phone, four once there is room. */
     .figures {
       display: grid;
@@ -136,7 +157,6 @@ import { Seo } from '../core/seo';
       font-size: var(--step--1);
     }
 
-
     .switch {
       display: flex;
       align-items: center;
@@ -151,10 +171,25 @@ import { Seo } from '../core/seo';
       height: 1.15rem;
       accent-color: var(--accent);
     }
+
+    .version {
+      padding-top: var(--space-2);
+      border-top: 1px solid var(--border);
+      font-size: var(--step--1);
+      font-variant-numeric: tabular-nums;
+    }
+
+    .commit {
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      font-size: 0.75rem;
+    }
   `,
 })
 export class AboutPage {
   protected readonly total = KURAL_COUNT;
+  protected readonly version = APP_VERSION;
+  protected readonly commit = APP_COMMIT;
+  protected readonly builtOn = APP_BUILT_ON;
 
   protected readonly figures = [
     { value: 3, label: 'பால்', detail: 'அறம், பொருள், இன்பம்' },
@@ -162,14 +197,14 @@ export class AboutPage {
     { value: 133, label: 'அதிகாரம்', detail: 'பத்துக் குறள்கள் கொண்டவை' },
     { value: KURAL_COUNT, label: 'குறள்', detail: 'மூன்று உரைகளுடன்' },
   ] as const;
-  protected readonly preferences = inject(Preferences);
 
+  protected readonly preferences = inject(Preferences);
 
   constructor() {
     inject(Seo).apply({
       title: 'நூலைப் பற்றி',
       description:
-        'திருக்குறள் நூலைப் பற்றிய குறிப்பு, உரைத் தேர்வு, தோற்ற அமைப்பு, இணையம் இல்லாமல் பயன்படுத்தும் முறை.',
+        'திருக்குறள் நூலைப் பற்றிய குறிப்பு, உரை அமைப்பு, இணையம் இல்லாமல் பயன்படுத்தும் முறை.',
       path: '/about',
     });
   }
