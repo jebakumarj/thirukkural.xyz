@@ -1,31 +1,21 @@
 # Server setup
 
-One-time steps on the Linux box. After this, deploying is `npm run deploy`.
+One-time steps on the Linux box, then a short routine for each deploy. The
+site is static, so the server needs nothing but nginx — no Node, no database,
+no application server.
 
-## 1. Directories and a deploy user
+## 1. Directories
 
 ```bash
-sudo adduser --disabled-password --gecos "" deploy
 sudo mkdir -p /var/www/thirukkural/releases /var/www/certbot
-sudo chown -R deploy:deploy /var/www/thirukkural
 ```
 
-Add your workstation's public key to `/home/deploy/.ssh/authorized_keys`. The
-deploy user needs no sudo: it only writes inside `/var/www/thirukkural`.
+Each deploy unpacks into `releases/<timestamp>/`, and a `current` symlink
+points at whichever release is live. Rolling back is moving that symlink.
 
-Restrict what that key can do, so a leaked deploy key cannot open a shell —
-prefix the line in `authorized_keys` with:
-
-```
-restrict,pty ssh-ed25519 AAAA...
-```
-
-`restrict` turns off agent and port forwarding, X11 and user rc; `pty` is kept
-because `deploy.sh` runs a short `bash -s` block over ssh to swap the symlink.
-
-While you are there, confirm the basics in `/etc/ssh/sshd_config`:
-`PasswordAuthentication no`, `PermitRootLogin no`. If the box is reachable from
-the internet, `fail2ban` is worth the five minutes.
+While you are here, confirm the basics in `/etc/ssh/sshd_config`:
+`PasswordAuthentication no` if you use keys, `PermitRootLogin no`. If the box
+is reachable from the internet, `fail2ban` is worth the five minutes.
 
 ## 2. nginx
 
@@ -40,6 +30,10 @@ sudo nginx -t && sudo systemctl reload nginx
 certbot first (step 3) or comment out the `listen 443` blocks for the first
 reload.
 
+The security headers live in their own snippet because nginx does not merge
+`add_header` across levels: a location that sets its own `Cache-Control` drops
+every header inherited from `server`, so each location includes the snippet.
+
 ## 3. TLS
 
 ```bash
@@ -49,13 +43,73 @@ sudo certbot --nginx -d thirukkural.xyz -d www.thirukkural.xyz
 Renewal is handled by the `certbot.timer` systemd unit that the package
 installs. Check it with `systemctl list-timers | grep certbot`.
 
-## 4. First deploy
+## 4. Deploying
 
-From your workstation:
+### On your machine
 
 ```bash
-cp deploy/.env.example deploy/.env   # then edit DEPLOY_HOST
-npm run deploy
+npm run package
+```
+
+This runs the production build and packs it into
+`thirukkural-<timestamp>.tar.gz` — about 14 MB, from an 86 MB build — then
+prints the server commands with the timestamp already filled in. Upload it
+however suits you:
+
+```bash
+scp thirukkural-20260920-091824.tar.gz you@YOUR-SERVER:/tmp/
+```
+
+### On the server
+
+```bash
+RELEASE=20260920-091824      # the timestamp from the filename
+
+sudo mkdir -p /var/www/thirukkural/releases/$RELEASE
+sudo tar -xzf /tmp/thirukkural-$RELEASE.tar.gz -C /var/www/thirukkural/releases/$RELEASE
+sudo chown -R www-data:www-data /var/www/thirukkural/releases/$RELEASE
+
+sudo ln -sfn /var/www/thirukkural/releases/$RELEASE /var/www/thirukkural/current.tmp
+sudo mv -Tf /var/www/thirukkural/current.tmp /var/www/thirukkural/current
+
+rm /tmp/thirukkural-$RELEASE.tar.gz
+```
+
+The symlink swap is the deploy: until it moves, visitors keep seeing the
+previous release, and the swap itself is atomic. nginx needs no reload — it
+follows the symlink on the next request.
+
+Use whichever user nginx runs as in the `chown`; `ps -o user= -C nginx | sort -u`
+says which it is.
+
+### Check it
+
+```bash
+curl -I https://thirukkural.xyz/                     # 200, Cache-Control: no-cache
+curl -I https://thirukkural.xyz/kural/42/            # 200
+curl -sI https://thirukkural.xyz/ | grep -i strict-transport   # headers present
+curl -o /dev/null -w '%{http_code}\n' https://thirukkural.xyz/nope   # 404
+curl -s https://thirukkural.xyz/ngsw.json | head -c 80           # service worker manifest
+```
+
+Readers already running the app get the new build through the service worker:
+it notices the change, downloads it in the background, and the app offers
+"புதிய பதிப்பு தயார்".
+
+### Tidying old releases
+
+Releases are kept so a rollback is instant. Prune them when there are too many:
+
+```bash
+ls -1dt /var/www/thirukkural/releases/*/ | tail -n +6 | sudo xargs -r rm -rf
+```
+
+### Rolling back
+
+```bash
+ls -1t /var/www/thirukkural/releases        # newest first
+sudo ln -sfn /var/www/thirukkural/releases/PREVIOUS /var/www/thirukkural/current.tmp
+sudo mv -Tf /var/www/thirukkural/current.tmp /var/www/thirukkural/current
 ```
 
 ## 5. Retiring the old stack

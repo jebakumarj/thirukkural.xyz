@@ -10,9 +10,9 @@
     "test": "ng test",
     "fonts": "node scripts/fetch-fonts.mjs",
     "icons": "node scripts/generate-icons.mjs",
-    "deploy": "bash deploy/deploy.sh",
     "check:layout": "node scripts/check-layout.mjs",
-    "version": "node scripts/generate-version.mjs"
+    "version": "node scripts/generate-version.mjs",
+    "package": "npm run build && node scripts/package-release.mjs"
   },
   "private": true,
   "packageManager": "npm@11.13.0",

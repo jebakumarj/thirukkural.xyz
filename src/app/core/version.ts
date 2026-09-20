@@ -3,5 +3,5 @@
  * Regenerated on every production build.
  */
 export const APP_VERSION = '1.0.0';
-export const APP_COMMIT = '3345433';
+export const APP_COMMIT = 'cec6e4b';
 export const APP_BUILT_ON = '2026-09-20';

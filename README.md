@@ -84,19 +84,18 @@ will tell you if anything is off.
 
 ## Deploying
 
-See [deploy/server-setup.md](deploy/server-setup.md) for the one-time server
-setup. After that:
+Deploys are done by hand. See [deploy/server-setup.md](deploy/server-setup.md)
+for the one-time server setup — directories, nginx and TLS. After that, each
+release is:
 
 ```bash
-cp deploy/.env.example deploy/.env    # set DEPLOY_HOST
-npm run deploy
+npm run package     # builds, then packs dist/ into a ~14 MB tarball
 ```
 
-Each deploy uploads a timestamped release and flips the `current` symlink, so
-rolling back is re-pointing that symlink at the previous release. Pushing to
-`main` does the same thing through `.github/workflows/deploy.yml`, which needs
-three repository secrets: `DEPLOY_HOST`, `DEPLOY_KEY` (the private key) and
-`DEPLOY_HOST_KEY` (the server's `known_hosts` line).
+It prints the commands to run on the server: upload the tarball, unpack it into
+`releases/<timestamp>/`, and move the `current` symlink. The swap is atomic and
+needs no nginx reload, and rolling back is pointing that symlink at the previous
+release, which stays on disk.
 
 Two cache rules in [deploy/nginx.conf](deploy/nginx.conf) matter more than the
 rest: `index.html` and `ngsw.json` must not be cached, or visitors stay on an
