@@ -4,8 +4,8 @@
 offline-capable web app.
 
 The whole book is compiled into the site. There is no API, no database and no
-application server at runtime: `ng build` prerenders 1,487 static pages and
-nginx serves them.
+application server at runtime: the build prerenders 1,488 static pages, and any
+web server that can hand out files can serve them.
 
 ## How it is put together
 
@@ -82,24 +82,21 @@ invariants on every test run.
 To regenerate them from a database dump, produce the same shapes and the tests
 will tell you if anything is off.
 
-## Deploying
+## Hosting it
 
-Deploys are done by hand. See [deploy/server-setup.md](deploy/server-setup.md)
-for the one-time server setup — directories, nginx and TLS. After that, each
-release is:
+`npm run build` writes the finished site to `dist/thirukkural/browser`: plain
+static files, every route already rendered to its own `index.html`. Serve that
+folder with whatever you like — there is nothing to run alongside it.
+`npm run package` tars it up if you want to move it in one piece.
 
-```bash
-npm run package     # builds, then packs dist/ into a ~14 MB tarball
-```
+Two things are worth setting on whatever serves it:
 
-It prints the commands to run on the server: upload the tarball, unpack it into
-`releases/<timestamp>/`, and move the `current` symlink. The swap is atomic and
-needs no nginx reload, and rolling back is pointing that symlink at the previous
-release, which stays on disk.
-
-Two cache rules in [deploy/nginx.conf](deploy/nginx.conf) matter more than the
-rest: `index.html` and `ngsw.json` must not be cached, or visitors stay on an
-old service worker; everything with a hashed filename is cached for a year.
+- **Do not cache `/index.html` or `/ngsw.json`.** Everything else carries a
+  hash in its filename and can be cached for a year, but if those two are
+  cached, visitors stay on an old service worker and never see a new build.
+- **Return a real 404 for unknown paths**, falling back to `/index.csr.html` —
+  the empty client-rendered shell — so the app draws its own not-found page
+  while the status code stays honest for crawlers.
 
 ## Routes
 

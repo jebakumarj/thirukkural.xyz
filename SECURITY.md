@@ -5,8 +5,7 @@ and there is no API, no database and no application server behind it. That
 removes most of what usually goes wrong, but not all of it.
 
 If you find something — a way to get content onto the page that should not be
-there, a mistake in the deployment configuration in `deploy/`, or a dependency
-with a known vulnerability — please open an issue at
+there, or a dependency with a known vulnerability — please open an issue at
 <https://github.com/jebakumarj/thirukkural.xyz/issues>.
 
 If the problem is sensitive enough that a public issue would put readers at
@@ -17,7 +16,6 @@ can.
 ## What is in scope
 
 - The application code and build scripts in this repository.
-- The nginx and deploy configuration in `deploy/`.
 - The live site at <https://thirukkural.xyz>.
 
 ## What is not
