@@ -379,7 +379,7 @@ export const renderKuralImage = async (
     };
   });
 
-  const footerHeight = 160;
+  const footerHeight = 140;
   const bodyHeight = laid.reduce(
     (total, { block, lines }) => total + block.gap + lines.length * block.lineHeight,
     0,
@@ -441,7 +441,7 @@ export const renderKuralImage = async (
   }
 
   // Footer: the mark and the address, so a shared picture says where it is from.
-  const footerY = cardTop + cardHeight - 128;
+  const footerY = cardTop + cardHeight - 108;
   ctx.strokeStyle = palette.rule;
   ctx.lineWidth = 2;
   ctx.beginPath();
@@ -449,13 +449,16 @@ export const renderKuralImage = async (
   ctx.lineTo(right, footerY);
   ctx.stroke();
 
+  // One row: the mark and name on the left, the address against the right edge.
   drawMark(ctx, left, footerY + 22, 52);
   ctx.fillStyle = palette.ink;
   ctx.font = font(600, 30);
-  ctx.fillText('திருக்குறள்', left + 70, footerY + 52);
+  ctx.fillText('திருக்குறள்', left + 70, footerY + 58);
+  ctx.textAlign = 'right';
   ctx.fillStyle = palette.muted;
   ctx.font = font(400, 26);
-  ctx.fillText('thirukkural.xyz', left + 70, footerY + 86);
+  ctx.fillText('thirukkural.xyz', right, footerY + 58);
+  ctx.textAlign = 'left';
 
   return new Promise((resolve) => canvas.toBlob((blob) => resolve(blob), 'image/png'));
 };
