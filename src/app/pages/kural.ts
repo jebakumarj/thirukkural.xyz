@@ -5,6 +5,7 @@ import { Pager } from '../ui/pager';
 import { KURAL_COUNT, contextOf, kural } from '../core/corpus';
 import { ALL_URAI, URAI_LABELS } from '../core/preferences';
 import { Favourites } from '../core/favourites';
+import { Lists } from '../core/lists';
 import { Share } from '../core/share';
 import { Seo } from '../core/seo';
 
@@ -60,6 +61,17 @@ import { Seo } from '../core/seo';
           >
             <app-icon [name]="isFavourite() ? 'heart-filled' : 'heart'" />
             <span class="label">{{ isFavourite() ? 'விருப்பத்தில் உள்ளது' : 'விருப்பம்' }}</span>
+          </button>
+          <button
+            type="button"
+            class="btn"
+            aria-haspopup="dialog"
+            [class.btn-primary]="isListed()"
+            aria-label="பட்டியலில் சேர்"
+            (click)="lists.picking.set(ctx.kural.id)"
+          >
+            <app-icon name="tag" />
+            <span class="label">பட்டியல்</span>
           </button>
           <button type="button" class="btn" (click)="share.share(request()!)">
             <app-icon name="share" />
@@ -194,6 +206,7 @@ export class KuralPage {
 
   private readonly seo = inject(Seo);
   protected readonly favourites = inject(Favourites);
+  protected readonly lists = inject(Lists);
   protected readonly share = inject(Share);
 
   protected readonly context = computed(() => {
@@ -204,6 +217,11 @@ export class KuralPage {
   protected readonly isFavourite = computed(() => {
     const ctx = this.context();
     return ctx ? this.favourites.has(ctx.kural.id) : false;
+  });
+
+  protected readonly isListed = computed(() => {
+    const ctx = this.context();
+    return ctx ? this.lists.isListed(ctx.kural.id) : false;
   });
 
   /** This page shows every commentary, so it shares and copies all three. */

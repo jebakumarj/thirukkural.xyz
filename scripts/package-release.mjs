@@ -7,7 +7,8 @@
  *   npm run package
  */
 import { execFileSync } from 'node:child_process';
-import { statSync, existsSync } from 'node:fs';
+import { createHash } from 'node:crypto';
+import { readFileSync, statSync, existsSync } from 'node:fs';
 
 const DIST = 'dist/thirukkural/browser';
 
@@ -26,6 +27,13 @@ const archive = `thirukkural-${release}.tar.gz`;
 // The trailing dot packs the contents, so the tar has no wrapping directory.
 execFileSync('tar', ['-czf', archive, '-C', DIST, '.'], { stdio: 'inherit' });
 
-const mb = (statSync(archive).size / 1024 / 1024).toFixed(1);
-console.log(`\n${archive}  ${mb} MB`);
-console.log(`Unpack it where your web server serves from: tar -xzf ${archive} -C /path/to/webroot\n`);
+const { size } = statSync(archive);
+const sha = createHash('sha256').update(readFileSync(archive)).digest('hex');
+
+console.log(`\n${archive}`);
+console.log(`  ${size} bytes (${(size / 1024 / 1024).toFixed(1)} MB)`);
+console.log(`  sha256 ${sha}`);
+console.log('\nAfter copying it somewhere, check it arrived whole before unpacking:');
+console.log(`  sha256sum ${archive}     # must match the line above`);
+console.log(`  gzip -t ${archive}       # silence means the archive is sound`);
+console.log(`  tar -xzf ${archive} -C /path/to/webroot\n`);

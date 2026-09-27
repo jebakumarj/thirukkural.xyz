@@ -3,6 +3,7 @@ import { RouterLink } from '@angular/router';
 import { Icon } from './icon';
 import { Kural, contextOf } from '../core/corpus';
 import { Favourites } from '../core/favourites';
+import { Lists } from '../core/lists';
 import { ALL_URAI, PRIMARY_URAI, Preferences, SECONDARY_URAI, URAI_LABELS } from '../core/preferences';
 import { Share } from '../core/share';
 
@@ -58,6 +59,17 @@ import { Share } from '../core/share';
             (click)="favourites.toggle(kural().id)"
           >
             <app-icon [name]="isFavourite() ? 'heart-filled' : 'heart'" />
+          </button>
+          <button
+            type="button"
+            class="btn-icon"
+            aria-haspopup="dialog"
+            [class.is-listed]="isListed()"
+            aria-label="பட்டியலில் சேர்"
+            title="பட்டியலில் சேர்"
+            (click)="lists.picking.set(kural().id)"
+          >
+            <app-icon name="tag" />
           </button>
           <button
             type="button"
@@ -189,6 +201,10 @@ import { Share } from '../core/share';
       margin-inline-start: calc(-1 * var(--space-2));
     }
 
+    .is-listed {
+      color: var(--accent-text);
+    }
+
     .urai-toggle {
       margin-inline-start: auto;
       margin-inline-end: calc(-1 * var(--space-2));
@@ -205,6 +221,7 @@ export class KuralCard {
 
   protected readonly preferences = inject(Preferences);
   protected readonly favourites = inject(Favourites);
+  protected readonly lists = inject(Lists);
   protected readonly share = inject(Share);
 
   /** Each card opens and closes on its own, starting from the preference. */
@@ -213,6 +230,7 @@ export class KuralCard {
 
   protected readonly context = computed(() => contextOf(this.kural()));
   protected readonly isFavourite = computed(() => this.favourites.has(this.kural().id));
+  protected readonly isListed = computed(() => this.lists.isListed(this.kural().id));
   /**
    * What sharing and copying act on: this kural, with exactly the commentaries
    * the card is currently showing.

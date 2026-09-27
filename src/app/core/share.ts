@@ -8,6 +8,10 @@ const PITCH = 'திருக்குறள் — 1330 குறள்கள�
 
 export const kuralUrl = (id: number): string => `${SITE_ORIGIN}/kural/${id}`;
 
+/** A mouse or trackpad and no touch screen: a desktop, for sharing purposes. */
+const isDesktop = (): boolean =>
+  typeof matchMedia !== 'undefined' && matchMedia('(hover: hover) and (pointer: fine)').matches;
+
 /**
  * The kural as plain text: the couplet, where it sits in the book, and
  * whichever commentaries the reader currently has open.
@@ -39,8 +43,10 @@ export class Share {
   readonly toast = signal<string>('');
 
   /**
-   * Shares the kural as a picture with the link and a line about the app,
-   * stepping down to text, then to the clipboard, as the browser allows.
+   * Shares the kural as a picture. On a phone that means the share sheet, with
+   * the link and a line about the app; on a desktop, where a share sheet is
+   * rarely where the picture is wanted, it goes on the clipboard to paste.
+   * Each steps down to the other, then to text, as the browser allows.
    */
   async share({ context, urai }: ShareRequest): Promise<void> {
     const { kural } = context;
@@ -48,7 +54,15 @@ export class Share {
     const title = `திருக்குறள் ${kural.id}`;
     // The picture carries the words, so the message alongside it stays short.
     const message = `${kural.lines[0]}\n${kural.lines[1]}\n\n${PITCH}\n${url}`;
-    const file = await this.renderFile(context, urai);
+    const rendering = this.renderFile(context, urai);
+
+    // Started before anything is awaited: the clipboard only accepts a write
+    // made while the click still counts as the reader's, and Safari stops
+    // counting at the first await.
+    const copied = isDesktop() ? this.copyImage(rendering) : Promise.resolve(false);
+    if (await copied) return;
+
+    const file = await rendering;
 
     // `navigator.share` is typed as always present but is missing on desktop
     // Firefox and in the prerenderer, so it is checked by name.
@@ -59,8 +73,8 @@ export class Share {
       if (await this.attempt({ title, text: message, url })) return;
     }
 
-    // No share sheet: put the picture and the words on the clipboard instead.
-    if (file && (await this.copyImage(file, message))) return;
+    // No share sheet on a phone: try the clipboard there too.
+    if (!isDesktop() && file && (await this.copyImage(Promise.resolve(file)))) return;
     await this.copy(kuralAsText(context, urai));
   }
 
@@ -105,15 +119,22 @@ export class Share {
     }
   }
 
-  private async copyImage(file: File, text: string): Promise<boolean> {
+  /**
+   * Puts the picture alone on the clipboard. Adding a text version alongside
+   * it would make most paste targets — chat boxes, documents, mail — take the
+   * text and drop the picture; the picture already carries the words and the
+   * address. The item takes the file as a promise so the write can begin
+   * before the drawing has finished.
+   */
+  private async copyImage(file: Promise<File | null>): Promise<boolean> {
+    if (typeof ClipboardItem === 'undefined' || !navigator.clipboard?.write) return false;
     try {
-      await navigator.clipboard.write([
-        new ClipboardItem({
-          'image/png': file,
-          'text/plain': new Blob([text], { type: 'text/plain' }),
-        }),
-      ]);
-      this.announce('படம் நகலெடுக்கப்பட்டது');
+      const png = file.then((f) => {
+        if (!f) throw new Error('No picture to copy');
+        return f;
+      });
+      await navigator.clipboard.write([new ClipboardItem({ 'image/png': png })]);
+      this.announce('படம் நகலெடுக்கப்பட்டது — ஒட்டலாம்');
       return true;
     } catch {
       return false;

@@ -48,6 +48,25 @@
         } catch (e) {}
       })();
     </script>
+
+    <script>
+      // Google Analytics, loaded only on the production host so forks and
+      // local builds don't report into this property.
+      (function () {
+        if (location.hostname !== 'thirukkural.xyz') return;
+        var id = 'G-9FNV1Y8WWY';
+        var s = document.createElement('script');
+        s.async = true;
+        s.src = 'https://www.googletagmanager.com/gtag/js?id=' + id;
+        document.head.appendChild(s);
+        window.dataLayer = window.dataLayer || [];
+        window.gtag = function () {
+          dataLayer.push(arguments);
+        };
+        gtag('js', new Date());
+        gtag('config', id);
+      })();
+    </script>
   </head>
   <body>
     <app-root></app-root>

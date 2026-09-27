@@ -56,16 +56,17 @@
       @if (install.canPrompt()) {
         <button type="button" class="btn install-btn" (click)="install.prompt()">நிறுவு</button>
       }
+      <!-- Phones reach search and favourites from the tab bar, so these two
+           are for wide screens. -->
       <a
         routerLink="/search"
         routerLinkActive="is-active"
-        class="btn-icon"
+        class="btn-icon desktop-only"
         aria-label="தேடு"
         title="தேடு"
       >
         <app-icon name="search" />
       </a>
-      <!-- Phones reach favourites from the tab bar, so this one is for wide screens. -->
       <a
         routerLink="/favourites"
         routerLinkActive="is-active"
@@ -138,6 +139,10 @@
     <app-icon name="list" />
     <span>குறள்</span>
   </a>
+  <a routerLink="/search" routerLinkActive="is-active">
+    <app-icon name="search" />
+    <span>தேடு</span>
+  </a>
   <a routerLink="/favourites" routerLinkActive="is-active">
     <app-icon name="heart" />
     <span>விருப்பம்</span>
@@ -186,6 +191,8 @@
 </dialog>
 
 <app-install-prompt />
+
+<app-list-picker />
 
 @if (share.toast(); as message) {
   <p class="toast" role="status">{{ message }}</p>

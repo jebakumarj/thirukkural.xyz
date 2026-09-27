@@ -24,7 +24,11 @@ export type IconName =
   | 'filter'
   | 'info'
   | 'help'
-  | 'mail';
+  | 'mail'
+  | 'tag'
+  | 'plus'
+  | 'edit'
+  | 'trash';
 
 /**
  * Icons are inline SVG rather than an icon font: nothing to download, nothing
@@ -149,6 +153,24 @@ export type IconName =
           <circle cx="12" cy="12" r="8.5" />
           <path d="M9.6 9.3a2.5 2.5 0 1 1 3.4 2.3c-.7.3-1 .9-1 1.6v.4" />
           <path d="M12 16.7h.01" />
+        }
+        @case ('tag') {
+          <path
+            d="M3.5 12.1V4.5a1 1 0 0 1 1-1h7.6a1 1 0 0 1 .7.3l7.9 7.9a1 1 0 0 1 0 1.4l-7.6 7.6a1 1 0 0 1-1.4 0l-7.9-7.9a1 1 0 0 1-.3-.7z"
+          />
+          <path d="M8.5 8.5h.01" />
+        }
+        @case ('plus') {
+          <path d="M12 5v14M5 12h14" />
+        }
+        @case ('edit') {
+          <path d="M4 20h4L19 9a2.8 2.8 0 0 0-4-4L4 16z" />
+          <path d="m13.5 6.5 4 4" />
+        }
+        @case ('trash') {
+          <path d="M4 7h16" />
+          <path d="M9.5 7V4.5h5V7" />
+          <path d="m6 7 1 12.5a1 1 0 0 0 1 .9h8a1 1 0 0 0 1-.9L18 7" />
         }
         @case ('info') {
           <circle cx="12" cy="12" r="8.5" />

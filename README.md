@@ -17,13 +17,14 @@ web server that can hand out files can serve them.
 | Styling | Plain CSS with custom properties, mobile-first, light and dark themes, blue palette carried over from the original app. No CSS framework |
 | Icons | Inline SVG components. No icon font. The app mark is an ஓலைச்சுவடி plaque, drawn as shapes so it needs no font |
 | Fonts | Mukta Malar, self-hosted, Tamil and Latin subsets only |
-| Search | Client-side over the whole corpus; nothing leaves the device |
-| Sharing | The card is drawn on a canvas and shared as a PNG with the link; no screenshot library |
+| Search | Client-side over the whole corpus; there is no search server |
+| Sharing | The card is drawn on a canvas, in the current theme's colours, and shared as a PNG with the link; no screenshot library |
 | Offline | Angular service worker precaches the shell, the corpus, the fonts and the icons |
-| Storage | Favourites and preferences in `localStorage`, guarded so the app works without it |
+| Storage | Favourites, lists and preferences in `localStorage`, guarded so the app works without it. Only kural numbers are stored, so the shell never needs the corpus |
 
-Initial load is about 91 KB compressed; the corpus arrives in a second, cached
-chunk.
+A first visit is about 400 KB compressed: roughly 93 KB of app shell, and the
+whole corpus as a further ~290 KB chunk, preloaded alongside it. After that the
+service worker serves everything from the cache, online or not.
 
 ## What it does
 
@@ -36,10 +37,17 @@ chunk.
   பால்/இயல்/அதிகாரம் filter behind a filter button. Typing a number jumps to that
   kural. Shareable as `/search?q=…&adhikaram=…`.
 - **Cards** show the couplet with மு.வ. உரை; a chevron opens the other two.
-- **Share** hands the platform a rendered picture of the card, the link and a
-  line about the app, stepping down to text, then the clipboard, as the browser
-  allows. **Copy** takes the couplet and whichever commentaries are open.
+- **Share** draws the card as a picture, in the light or dark theme, on a ground
+  of corner mandalas and a beaded border. On a phone it goes to the share sheet
+  with the link and a line about the app; on a desktop it goes on the
+  clipboard, ready to paste. Either steps down to the other, then to text, as
+  the browser allows. **Copy** takes the couplet and whichever commentaries
+  are open, as text.
 - **Favourites** in this browser, with a count on the tab bar.
+- **Lists (tags)**: named groups of kurals. The tag button on a card adds that
+  kural to any number of lists or starts a new one. The favourites page shows
+  each list as a tab, where it can be renamed or deleted.
+- **A tab bar on phones** — home, chapters, kurals, search and favourites.
 - **Installable** as a PWA, with shortcuts and a share target, and fully usable
   offline after the first visit.
 
@@ -109,7 +117,7 @@ Two things are worth setting on whatever serves it:
 | `/iyal`, `/iyal/:id` | 14 | The 13 chapter groups |
 | `/paal`, `/paal/:id` | 4 | அறம், பொருள், இன்பம் |
 | `/search` | 1 | Client-side search with filter and number jump |
-| `/favourites` | 1 | Saved kurals, this browser only |
+| `/favourites` | 1 | Saved kurals and the reader's lists (`?list=<id>`), this browser only |
 | `/about` | 1 | The book, its figures, and reading preferences |
 
 The list pages link into the filtered views (`/kural?adhikaram=7`), while
@@ -120,6 +128,10 @@ URLs that crawlers follow.
 
 Suggestions, typos, corrections and rights queries: <admin@thirukkural.xyz>,
 or open an issue. The address is also on the app's நூலைப் பற்றி page.
+
+## Changelog
+
+What changed in each release: [CHANGELOG.md](CHANGELOG.md).
 
 ## Licence
 

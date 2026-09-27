@@ -15,6 +15,7 @@ import { SwUpdate } from '@angular/service-worker';
 import { Icon } from './ui/icon';
 import { BookNav } from './ui/book-nav';
 import { InstallPrompt } from './ui/install-prompt';
+import { ListPicker } from './ui/list-picker';
 import { Install } from './core/install';
 import { Favourites } from './core/favourites';
 import { Preferences, ThemeChoice } from './core/preferences';
@@ -23,7 +24,7 @@ import { Share } from './core/share';
 @Component({
   selector: 'app-root',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [RouterOutlet, RouterLink, RouterLinkActive, Icon, BookNav, InstallPrompt],
+  imports: [RouterOutlet, RouterLink, RouterLinkActive, Icon, BookNav, InstallPrompt, ListPicker],
   templateUrl: './app.html',
   styleUrl: './app.css',
 })
