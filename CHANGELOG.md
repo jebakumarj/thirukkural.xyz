@@ -62,6 +62,9 @@ favourites carry over untouched, and lists start empty.
   (நகலெடு) still copies the text.
 - On phones the header's search button is gone, since search is in the tab
   bar. Wide screens keep it in the header.
+- The shared picture's footer is a single row: the mark and திருக்குறள் on the
+  left, thirukkural.xyz against the right edge. The picture is a little
+  shorter for it.
 
 ### Fixed
 
