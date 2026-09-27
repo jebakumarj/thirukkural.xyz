@@ -10,7 +10,8 @@ import { URAI_LABELS } from './preferences';
  * picture takes the colours the app is showing at the moment it is shared.
  */
 
-const WIDTH = 1080;
+/** Wide enough that a kural's longer line fits at a generous size. */
+const WIDTH = 1280;
 const PAD = 72;
 /**
  * Ground left around the card for the mandalas and the border: a narrow band,
@@ -100,21 +101,46 @@ interface Block {
   readonly gap: number;
   /** Draw a horizontal rule above this block. */
   readonly rule?: boolean;
+  /** Never wrap: the text is already sized to fit on one line. */
+  readonly nowrap?: boolean;
 }
 
 /** The header is one row, so it is drawn directly rather than as a block. */
 const HEADER_HEIGHT = 56;
 
+/** The couplet's preferred size. */
+const COUPLET_SIZE = 54;
+
+/**
+ * A kural is two lines, and the picture keeps it that way: rather than wrap a
+ * long line, both lines shrink together until the longer one fits. There is
+ * no floor, since a floor would let a line overflow; at this picture's width
+ * the longest in the book comes out at about 39px, still well above the
+ * commentary's 32px, and most stay at or near full size.
+ */
+const coupletSize = (
+  measure: CanvasRenderingContext2D,
+  lines: readonly string[],
+  maxWidth: number,
+): number => {
+  measure.font = font(700, COUPLET_SIZE);
+  const widest = Math.max(...lines.map((line) => measure.measureText(line).width));
+  if (widest <= maxWidth) return COUPLET_SIZE;
+  return Math.floor((COUPLET_SIZE * maxWidth) / widest);
+};
+
 const buildBlocks = (
   context: KuralContext,
   urai: readonly (keyof typeof URAI_LABELS)[],
   palette: Palette,
+  size: number,
 ): Block[] => {
   const { kural } = context;
   const { ink, muted } = palette;
+  const lineHeight = Math.round(size * 1.52);
   const blocks: Block[] = [
-    { text: kural.lines[0], weight: 700, size: 54, colour: ink, lineHeight: 82, gap: 40, rule: true },
-    { text: kural.lines[1], weight: 700, size: 54, colour: ink, lineHeight: 82, gap: 0 },
+    { text: kural.lines[0], weight: 700, size, colour: ink, lineHeight, gap: 40, rule: true, nowrap: true },
+    { text: kural.lines[1], weight: 700, size, colour: ink, lineHeight, gap: 0, nowrap: true },
   ];
 
   for (const key of urai) {
@@ -338,15 +364,19 @@ export const renderKuralImage = async (
   if (!measure) return null;
 
   const palette = currentPalette();
-  const blocks = buildBlocks(context, urai, palette);
   // The card's inner width: inset by the margin around it and its own padding.
   const cardWidth = WIDTH - MARGIN * 2;
   const textWidth = cardWidth - PAD * 1.4;
+  const size = coupletSize(measure, context.kural.lines, textWidth);
+  const blocks = buildBlocks(context, urai, palette, size);
 
   // First pass: lay the text out to find the height the card needs.
   const laid = blocks.map((block) => {
     measure.font = font(block.weight, block.size);
-    return { block, lines: wrap(measure, block.text, textWidth) };
+    return {
+      block,
+      lines: block.nowrap ? [block.text] : wrap(measure, block.text, textWidth),
+    };
   });
 
   const footerHeight = 160;
