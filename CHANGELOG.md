@@ -9,6 +9,13 @@ is running, so a report can be tied to a release.
 
 ## [Unreleased]
 
+### Technical
+
+- `src/app/core/version.ts` is no longer committed. It names the commit it was
+  built from, so a committed copy was always one commit behind, and every
+  build left it modified. It is now git-ignored and written before
+  `npm start`, `npm test` and every build, including `build:dev`.
+
 ## [1.0.1] - 2026-09-27
 
 Kurals can now be grouped into the reader's own lists, search moves into the

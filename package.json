@@ -3,10 +3,12 @@
   "version": "1.0.1",
   "scripts": {
     "ng": "ng",
+    "prestart": "node scripts/generate-version.mjs",
     "start": "ng serve",
     "build": "node scripts/generate-version.mjs && ng build && node scripts/generate-sitemap.mjs",
-    "build:dev": "ng build --configuration development",
+    "build:dev": "node scripts/generate-version.mjs && ng build --configuration development",
     "preview": "npm run build && npx --yes http-server dist/thirukkural/browser -p 4300 -c-1",
+    "pretest": "node scripts/generate-version.mjs",
     "test": "ng test",
     "fonts": "node scripts/fetch-fonts.mjs",
     "icons": "node scripts/generate-icons.mjs",

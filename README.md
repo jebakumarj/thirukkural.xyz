@@ -67,6 +67,11 @@ npm run check:layout # drive the built site in Chrome at phone, tablet and
 The service worker is disabled in development, so test install and offline
 behaviour against `npm run preview`.
 
+`src/app/core/version.ts` is generated, not committed. `npm start`, `npm test`
+and every build write it from `package.json` and the current git commit, and
+the About page shows it. Running `ng serve` or `ng test` directly skips that
+step, so on a fresh clone run `npm run version` once first.
+
 ### Regenerating assets
 
 ```bash

@@ -1,9 +1,10 @@
 /**
  * Writes src/app/core/version.ts from package.json and git, so the running app
- * can say which build it is. Runs as the first step of `npm run build`.
+ * can say which build it is. Runs before `npm start`, `npm test` and every
+ * build, so the file always exists when the app is compiled.
  *
- * The generated file is committed, so `npm start` and the tests work without
- * running this first; the build overwrites it with current values.
+ * The file is git-ignored rather than committed. It names the commit it was
+ * built from, so committing it would always make it one commit out of date.
  */
 import { execFileSync } from 'node:child_process';
 import { readFile, writeFile } from 'node:fs/promises';
